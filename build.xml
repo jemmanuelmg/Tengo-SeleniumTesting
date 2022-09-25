@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="SeleniumTests" basedir=".">
+	<property name="build.dir" value="${basedir}/build"/>
+	<property name="src.dir" value="${basedir}/src"/>
+	<property name="lib.dir" value="${basedir}/libraries"/>
+	
+	<target name="clean">
+		<delete dir="${build.dir}"/>
+	</target>
+
+	<target name="compile" depends="clean">
+		<mkdir dir="${build.dir}"/>
+		<javac destdir="${build.dir}" srcdir="${src.dir}" includeAntRuntime="false">
+			<classpath>
+                <fileset dir="${lib.dir}">
+                    <include name="**/*.jar" />
+                </fileset>
+                <fileset dir="${src.dir}">
+	            	<include name="**/*.java" />
+	          	</fileset>
+            </classpath>
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile">
+        <mkdir dir="${build.dir}/jar"/>
+        <jar destfile="${build.dir}/jar/SeleniumLauncher.jar" basedir="${build.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="SeleniumLauncher"/>
+            </manifest> 
+        </jar> 
+    </target>
+
+	<target name="run" depends="jar">
+		<java classname="co.tengo.selenium.SeleniumLauncher" fork="true">
+			<classpath>
+				<pathelement location="${build.dir}/jar/SeleniumLauncher.jar"/>
+	            <fileset dir="${lib.dir}">
+	                <include name="**/*.jar" />
+	            </fileset>
+	            <fileset dir="${src.dir}">
+	            	<include name="**/*.java" />
+	          	</fileset>
+        	</classpath>
+        	<arg value="${user}"/>
+	        <arg value="${password}"/>
+	        <arg value="${address}"/>
+	        <arg value="${basedir}"/>
+		</java>
+	</target>
+
+</project>
